@@ -6,7 +6,7 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 // Подключение Chart.js
 var chartScript = document.createElement('script');
-chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.js';
+chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js';
 chartScript.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(chartScript);
 
@@ -26,7 +26,6 @@ script.onload = function() {
                         borderColor: '#16A2DC',
                         borderWidth: 2,
                         fill: false,
-                        yAxisID: 'y1'
                     }],
                 },
                 options: {
@@ -37,18 +36,21 @@ script.onload = function() {
                     },
                     scales: {
                         x: {
+                            type: 'linear',
+                            position: 'bottom',
                             beginAtZero: true,
                             ticks: {
-                                callback: (label) => `${label} min`
+                                stepSize: 5,
+                                callback: (value, index) => (index % 2 === 0 ? `${value}m` : '')
                             }
                         },
-                        y1: {
+                        y: {
                             beginAtZero: true,
                             min: 0,
                             max: 1,
                             ticks: {
-                                stepSize: 0.2,
-                                callback: (label) => label.toFixed(1)
+                                stepSize: 0.1,
+                                callback: (value) => value.toFixed(1)
                             }
                         }
                     },
@@ -62,7 +64,7 @@ script.onload = function() {
 
             // Функция для генерации случайного курса
             function generateRandomRate() {
-                return { x: new Date().getMinutes(), y: Math.random() };
+                return { x: myChart.data.labels.length * 5, y: Math.random() };
             }
 
             // Функция для обновления графика каждые 5 секунд
