@@ -6,7 +6,7 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 // Подключение Chart.js
 var chartScript = document.createElement('script');
-chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js';
+chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
 chartScript.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(chartScript);
 
@@ -16,32 +16,26 @@ script.onload = function() {
     $(document).ready(function() {
         chartScript.onload = function() {
             // Ваш конфиг для графика
-            const config = {
-                type: 'line',
+            const xValues = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+            const yValues = [0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+
+            new Chart("myChart", {
+                type: "line",
                 data: {
-                    labels: [],
+                    labels: xValues,
                     datasets: [{
-                        label: 'Курс валюты',
-                        data: [],
-                        borderColor: '#16A2DC',
-                        borderWidth: 2,
-                        fill: false,
-                    }],
+                        backgroundColor: "rgba(0,0,255,1.0)",
+                        borderColor: "rgba(0,0,255,0.1)",
+                        data: yValues
+                    }]
                 },
                 options: {
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                    },
                     scales: {
                         x: {
-                            type: 'linear',
-                            position: 'bottom',
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 5,
-                                callback: (value, index) => (index % 2 === 0 ? `${value}m` : '')
+                                callback: (value) => `${value}m`
                             }
                         },
                         y: {
@@ -56,39 +50,29 @@ script.onload = function() {
                     },
                     responsive: true
                 }
-            };
-
-            // Инициализация графика
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myChart = new Chart(ctx, config);
-
-            // Функция для генерации случайного курса
-            function generateRandomRate() {
-                return { x: myChart.data.labels.length * 5, y: Math.random() };
-            }
+            });
 
             // Функция для обновления графика каждые 5 секунд
             function updateChart() {
-                var newDataPoint = generateRandomRate();
+                // Генерация новых данных
+                const newYValue = Math.random();
+                
+                // Обновление данных графика
+                new Chart("myChart").data.datasets[0].data.push(newYValue);
 
-                // Обновляем данные графика
-                myChart.data.labels.push(newDataPoint.x);
-                myChart.data.datasets[0].data.push(newDataPoint.y);
-
-                // Ограничиваем количество точек на графике (например, оставим только последние 10 точек)
-                if (myChart.data.labels.length > 10) {
-                    myChart.data.labels.shift();
-                    myChart.data.datasets[0].data.shift();
+                // Ограничение количества точек на графике (оставляем последние 12 точек)
+                if (new Chart("myChart").data.datasets[0].data.length > 12) {
+                    new Chart("myChart").data.datasets[0].data.shift();
                 }
 
-                // Обновляем график
-                myChart.update();
+                // Обновление графика
+                new Chart("myChart").update();
 
-                // Запускаем обновление каждые 5 секунд
+                // Запуск обновления каждые 5 секунд
                 setTimeout(updateChart, 5000);
             }
 
-            // Запускаем обновление графика
+            // Запуск обновления графика
             updateChart();
         };
     });
