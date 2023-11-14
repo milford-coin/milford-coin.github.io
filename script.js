@@ -18,6 +18,13 @@ script.onload = function() {
             // Ваш конфиг для графика
             const xValues = [];
             const yValues = [];
+            const localStorageKey = 'currencyRate';
+
+            // Проверка наличия сохраненного значения в кеше
+            const savedRate = localStorage.getItem(localStorageKey);
+            if (savedRate) {
+                yValues.push(parseFloat(savedRate));
+            }
 
             var myChart = new Chart("myChart", {
                 type: "line",
@@ -62,6 +69,9 @@ script.onload = function() {
                 myChart.data.labels.push(newXValue);
                 myChart.data.datasets[0].data.push(newYValue);
 
+                // Сохранение текущего курса в кеш
+                localStorage.setItem(localStorageKey, newYValue.toFixed(2));
+
                 // Ограничение количества точек на графике (оставляем последние 12 точек)
                 if (myChart.data.labels.length > 12) {
                     myChart.data.labels.shift();
@@ -71,6 +81,7 @@ script.onload = function() {
                 // Обновление графика
                 myChart.update();
 
+                // Обновление текущего курса
                 document.getElementById('current-rate').innerText = 'Текущий курс валюты: ' + newYValue.toFixed(2);
 
                 // Запуск обновления каждые 5 секунд
