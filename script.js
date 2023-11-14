@@ -1,6 +1,6 @@
 // Подключение jQuery
 var script = document.createElement('script');
-script.src = 'https://code.jquery.com/jquery-3.6.4.min.js';
+script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js';
 script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
 
