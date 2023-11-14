@@ -16,8 +16,8 @@ script.onload = function() {
     $(document).ready(function() {
         chartScript.onload = function() {
             // Ваш конфиг для графика
-            const xValues = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-            const yValues = [0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+            const xValues = [];
+            const yValues = [];
 
             var myChart = new Chart("myChart", {
                 type: "line",
