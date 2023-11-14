@@ -6,7 +6,7 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 // Подключение Chart.js
 var chartScript = document.createElement('script');
-chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.js';
 chartScript.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(chartScript);
 
@@ -15,64 +15,75 @@ script.onload = function() {
     // Ваш оригинальный код
     $(document).ready(function() {
         chartScript.onload = function() {
-            // Инициализация графика
-            var ctx = document.getElementById('chart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'line',
+            // Ваш конфиг для графика
+            const config = {
+                type: 'scatter',
                 data: {
-                    labels: [],
                     datasets: [{
-                        label: 'Курс валюты',
                         data: [],
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2,
-                        fill: false
-                    }]
+                        showLine: true,
+                        backgroundColor: '#16A2DC',
+                        borderColor: '#16A2DC',
+                        tension: 0.4,
+                    }],
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                    },
                     scales: {
                         x: {
-                            type: 'linear',
-                            position: 'bottom'
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (label) => `${label}h`
+                            }
                         },
                         y: {
-                            beginAtZero: false
+                            beginAtZero: true,
+                            min: 0,
+                            max: 60,
+                            ticks: {
+                                stepSize: 15,
+                                callback: (label) => (label < 60) ? `${label}min` : '1h+'
+                            }
                         }
-                    }
+                    },
+                    responsive: true
                 }
-            });
+            };
+
+            // Инициализация графика
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, config);
 
             // Функция для генерации случайного курса
             function generateRandomRate() {
-                return (Math.random() * (1 - 0.5) + 0.5).toFixed(2);
+                return { x: new Date().getHours(), y: Math.floor(Math.random() * 60) };
             }
 
-            // Функция для обновления курса и графика каждые 5 секунд
-            function updateExchangeRate() {
+            // Функция для обновления графика каждые 5 секунд
+            function updateChart() {
                 var newDataPoint = generateRandomRate();
 
                 // Обновляем данные графика
-                chart.data.labels.push(new Date().toLocaleTimeString());
-                chart.data.datasets[0].data.push(newDataPoint);
+                myChart.data.datasets[0].data.push(newDataPoint);
 
                 // Ограничиваем количество точек на графике (например, оставим только последние 10 точек)
-                if (chart.data.labels.length > 10) {
-                    chart.data.labels.shift();
-                    chart.data.datasets[0].data.shift();
+                if (myChart.data.datasets[0].data.length > 10) {
+                    myChart.data.datasets[0].data.shift();
                 }
 
-                // Обновляем значение на странице
-                $('#exchange-rate').text('Текущий курс валюты: ' + newDataPoint + ' долларов');
-
                 // Обновляем график
-                chart.update();
+                myChart.update();
 
                 // Запускаем обновление каждые 5 секунд
-                setTimeout(updateExchangeRate, 5000);
+                setTimeout(updateChart, 5000);
             }
 
-            // Запускаем обновление курса
-            updateExchangeRate();
+            // Запускаем обновление графика
+            updateChart();
         };
     });
 };
