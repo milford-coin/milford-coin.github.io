@@ -19,7 +19,7 @@ script.onload = function() {
             const xValues = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
             const yValues = [0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
 
-            new Chart("myChart", {
+            var myChart = new Chart("myChart", {
                 type: "line",
                 data: {
                     labels: xValues,
@@ -55,18 +55,21 @@ script.onload = function() {
             // Функция для обновления графика каждые 5 секунд
             function updateChart() {
                 // Генерация новых данных
+                const newXValue = myChart.data.labels.length * 5;
                 const newYValue = Math.random();
-                
+
                 // Обновление данных графика
-                new Chart("myChart").data.datasets[0].data.push(newYValue);
+                myChart.data.labels.push(newXValue);
+                myChart.data.datasets[0].data.push(newYValue);
 
                 // Ограничение количества точек на графике (оставляем последние 12 точек)
-                if (new Chart("myChart").data.datasets[0].data.length > 12) {
-                    new Chart("myChart").data.datasets[0].data.shift();
+                if (myChart.data.labels.length > 12) {
+                    myChart.data.labels.shift();
+                    myChart.data.datasets[0].data.shift();
                 }
 
                 // Обновление графика
-                new Chart("myChart").update();
+                myChart.update();
 
                 // Запуск обновления каждые 5 секунд
                 setTimeout(updateChart, 5000);
