@@ -71,6 +71,8 @@ script.onload = function() {
                 // Обновление графика
                 myChart.update();
 
+                document.getElementById('current-rate').innerText = 'Текущий курс валюты: ' + newYValue.toFixed(2);
+
                 // Запуск обновления каждые 5 секунд
                 setTimeout(updateChart, 5000);
             }
