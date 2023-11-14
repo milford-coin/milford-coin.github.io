@@ -17,14 +17,16 @@ script.onload = function() {
         chartScript.onload = function() {
             // Ваш конфиг для графика
             const config = {
-                type: 'scatter',
+                type: 'line',
                 data: {
+                    labels: [],
                     datasets: [{
+                        label: 'Курс валюты',
                         data: [],
-                        showLine: true,
-                        backgroundColor: '#16A2DC',
                         borderColor: '#16A2DC',
-                        tension: 0.4,
+                        borderWidth: 2,
+                        fill: false,
+                        yAxisID: 'y1'
                     }],
                 },
                 options: {
@@ -37,16 +39,16 @@ script.onload = function() {
                         x: {
                             beginAtZero: true,
                             ticks: {
-                                callback: (label) => `${label}h`
+                                callback: (label) => `${label} min`
                             }
                         },
-                        y: {
+                        y1: {
                             beginAtZero: true,
                             min: 0,
-                            max: 60,
+                            max: 1,
                             ticks: {
-                                stepSize: 15,
-                                callback: (label) => (label < 60) ? `${label}min` : '1h+'
+                                stepSize: 0.2,
+                                callback: (label) => label.toFixed(1)
                             }
                         }
                     },
@@ -60,7 +62,7 @@ script.onload = function() {
 
             // Функция для генерации случайного курса
             function generateRandomRate() {
-                return { x: new Date().getHours(), y: Math.floor(Math.random() * 60) };
+                return { x: new Date().getMinutes(), y: Math.random() };
             }
 
             // Функция для обновления графика каждые 5 секунд
@@ -68,10 +70,12 @@ script.onload = function() {
                 var newDataPoint = generateRandomRate();
 
                 // Обновляем данные графика
-                myChart.data.datasets[0].data.push(newDataPoint);
+                myChart.data.labels.push(newDataPoint.x);
+                myChart.data.datasets[0].data.push(newDataPoint.y);
 
                 // Ограничиваем количество точек на графике (например, оставим только последние 10 точек)
-                if (myChart.data.datasets[0].data.length > 10) {
+                if (myChart.data.labels.length > 10) {
+                    myChart.data.labels.shift();
                     myChart.data.datasets[0].data.shift();
                 }
 
